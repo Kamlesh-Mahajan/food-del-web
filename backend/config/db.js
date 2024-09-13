@@ -5,5 +5,5 @@ export const connectDB = async () => {
     .connect(
       "mongodb+srv://kpwork:kpworktamoto@cluster0.adgtq.mongodb.net/food-del"
     )
-    .then(() => console.log("DB connected"));
+    .then(() => console.log("Connected to MongoDB"));
 };
