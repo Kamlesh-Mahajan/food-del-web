@@ -1,15 +1,53 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { assets } from "../../assets/assets";
 
 import "./LoginPopup.css";
+import { StoreContext } from "../../context/StoreContext";
+import axios from "axios";
 
-// eslint-disable-next-line react/prop-types
 const LoginPopup = ({ setShowLogin }) => {
+  const { url, setToken } = useContext(StoreContext);
+
   const [currState, setCurrState] = useState("Sign Up");
+  const [data, setData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const onChangeHandler = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setData((data) => ({ ...data, [name]: value }));
+  };
+
+  const onLogin = async (event) => {
+    event.preventDefault();
+    let newUrl = url;
+    if (currState === "Login") {
+      newUrl += "/api/auth/login";
+    } else {
+      newUrl += "/api/auth/register";
+    }
+    try {
+      const response = await axios.post(newUrl, data);
+      if (response.data.success) {
+        if (currState === "Login") {
+          setToken(response.data.token);
+          localStorage.setItem("token", response.data.token);
+        }
+        setShowLogin(false);
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="login-popup">
-      <form action="" className="login-popup-container">
+      <form onSubmit={onLogin} action="" className="login-popup-container">
         <div className="login-popup-title">
           <h2>{currState}</h2>
           <img
@@ -22,13 +60,51 @@ const LoginPopup = ({ setShowLogin }) => {
           {currState === "Login" ? (
             <></>
           ) : (
-            <input type="text" placeholder="Your name" required />
+            <div>
+              <label htmlFor="name">Your name:</label>
+              <input
+                id="name"
+                key="name"
+                name="name"
+                onChange={onChangeHandler}
+                value={data.name}
+                type="text"
+                placeholder="Your name"
+                required
+              />
+            </div>
           )}
 
-          <input type="email" placeholder="Your email" required />
-          <input type="password" placeholder="Password" required />
+          <div>
+            <label htmlFor="email">Your email:</label>
+            <input
+              id="email"
+              key="email"
+              type="email"
+              name="email"
+              onChange={onChangeHandler}
+              value={data.email}
+              placeholder="Your email"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="password">Password:</label>
+            <input
+              id="password"
+              key="password"
+              type="password"
+              name="password"
+              onChange={onChangeHandler}
+              value={data.password}
+              placeholder="Password"
+              required
+            />
+          </div>
         </div>
-        <button> {currState === "Sign Up" ? "Create Accout" : "Login"} </button>
+        <button type="submit">
+          {currState === "Sign Up" ? "Create Account" : "Login"}
+        </button>
         <div className="login-popup-condition">
           <input type="checkbox" required />
           <p>By continuing, i agree to the terms of use & privacy policy.</p>
@@ -48,4 +124,5 @@ const LoginPopup = ({ setShowLogin }) => {
     </div>
   );
 };
+
 export default LoginPopup;
