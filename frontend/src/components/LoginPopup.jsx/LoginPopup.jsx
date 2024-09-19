@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useState } from "react";
 import { assets } from "../../assets/assets";
 
@@ -12,7 +13,7 @@ const LoginPopup = ({ setShowLogin }) => {
   const [data, setData] = useState({
     name: "",
     email: "",
-    password: "",
+    password: ""
   });
 
   const onChangeHandler = (event) => {
@@ -25,23 +26,19 @@ const LoginPopup = ({ setShowLogin }) => {
     event.preventDefault();
     let newUrl = url;
     if (currState === "Login") {
-      newUrl += "/api/auth/login";
+      newUrl += "/api/user/login";
     } else {
-      newUrl += "/api/auth/register";
+      newUrl += "/api/user/register";
     }
-    try {
-      const response = await axios.post(newUrl, data);
-      if (response.data.success) {
-        if (currState === "Login") {
-          setToken(response.data.token);
-          localStorage.setItem("token", response.data.token);
-        }
-        setShowLogin(false);
-      } else {
-        alert(response.data.message);
-      }
-    } catch (error) {
-      console.error(error);
+
+    const response = await axios.post(newUrl, data);
+
+    if (response.data.success) {
+      setToken(response.data.token);
+      localStorage.setItem("token", response.data.token);
+      setShowLogin(false);
+    } else {
+      alert(response.data.message);
     }
   };
 
@@ -60,47 +57,39 @@ const LoginPopup = ({ setShowLogin }) => {
           {currState === "Login" ? (
             <></>
           ) : (
-            <div>
-              <label htmlFor="name">Your name:</label>
-              <input
-                id="name"
-                key="name"
-                name="name"
-                onChange={onChangeHandler}
-                value={data.name}
-                type="text"
-                placeholder="Your name"
-                required
-              />
-            </div>
+            <input
+              id="name"
+              key="name"
+              name="name"
+              onChange={onChangeHandler}
+              value={data.name}
+              type="text"
+              placeholder="Your name"
+              required
+            />
           )}
 
-          <div>
-            <label htmlFor="email">Your email:</label>
-            <input
-              id="email"
-              key="email"
-              type="email"
-              name="email"
-              onChange={onChangeHandler}
-              value={data.email}
-              placeholder="Your email"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="password">Password:</label>
-            <input
-              id="password"
-              key="password"
-              type="password"
-              name="password"
-              onChange={onChangeHandler}
-              value={data.password}
-              placeholder="Password"
-              required
-            />
-          </div>
+          <input
+            id="email"
+            key="email"
+            type="email"
+            name="email"
+            onChange={onChangeHandler}
+            value={data.email}
+            placeholder="Your email"
+            required
+          />
+
+          <input
+            id="password"
+            key="password"
+            type="password"
+            name="password"
+            onChange={onChangeHandler}
+            value={data.password}
+            placeholder="Password"
+            required
+          />
         </div>
         <button type="submit">
           {currState === "Sign Up" ? "Create Account" : "Login"}

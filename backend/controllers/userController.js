@@ -9,11 +9,11 @@ const loginUser = async (req, res) => {
   try {
     const user = await userModel.findOne({ email });
     if (!user) {
-      return res.json({ success: false, message: "user dose not exists" });
+      return res.json({ success: false, message: "User Doesn't exist" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.json({ success: false, message: "Incorrect password" });
+      return res.json({ success: false, message: "Incorrect credentials" });
     }
 
     const token = createToken(user._id);
@@ -43,7 +43,7 @@ const registerUser = async (req, res) => {
     if (password.length < 8) {
       return res.json({
         success: false,
-        message: "Password should be at least 8 characters long",
+        message: "Password should be at least 8 characters long"
       });
     }
     // hashing user password
@@ -52,7 +52,7 @@ const registerUser = async (req, res) => {
     const newUser = new userModel({
       name: name,
       email: email,
-      password: hashedPassword,
+      password: hashedPassword
     });
     const user = await newUser.save();
     const token = createToken(user._id);
