@@ -6,8 +6,14 @@ import "./FoodItem.css";
 import { StoreContext } from "../../context/StoreContext";
 
 const FoodItem = ({ id, name, price, description, image }) => {
-  const { cartItems, addToCart, removeFromCart, url } =
-    useContext(StoreContext);
+  const {
+    cartItems = {},
+    addToCart,
+    removeFromCart,
+    url
+  } = useContext(StoreContext);
+
+  const maxDescriptionLength = 210;
 
   return (
     <div className="food-item" key={id}>
@@ -46,8 +52,15 @@ const FoodItem = ({ id, name, price, description, image }) => {
           <p>{name}</p>
           <img src={assets.rating_starts} alt="" />
         </div>
-        <p className="food-item-desc">{description}</p>
-        <p className="food-item-price">${price}</p>
+        <p className="food-item-desc">
+          {description.length > maxDescriptionLength
+            ? `${description.slice(0, maxDescriptionLength)}...`
+            : description}
+        </p>
+        <p className="food-item-price">
+          <span className="currency-symbol">₹</span>
+          {price}
+        </p>
       </div>
     </div>
   );

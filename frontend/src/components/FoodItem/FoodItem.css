@@ -44,6 +44,10 @@
   margin: 10px 0px;
 }
 
+.currency-symbol {
+  margin-right: 0.15rem;
+}
+
 .food-item-img-container {
   position: relative;
 }
