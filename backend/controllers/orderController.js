@@ -9,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // placing user order for frontend
 const placeOrder = async (req, res) => {
-  const frontend_url = "http://localhost:5173";
+  const frontend_url = "http://localhost:5174";
   try {
     const newOrder = new orderModel({
       userId: req.body.userId,
@@ -86,5 +86,26 @@ const userOrders = async (req, res) => {
     res.json({ success: false, message: "Failed to fetch user orders" });
   }
 };
-
-export { placeOrder, verifyOrder, userOrders };
+// listing order for admin panal
+const listOrders = async (req, res) => {
+  try {
+    const orders = await orderModel.find({});
+    res.json({ success: true, data: orders });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Failed to fetch orders" });
+  }
+};
+// api for updating order status
+const updateStatus = async (req, res) => {
+  try {
+    await orderModel.findByIdAndUpdate(req.body.orderId, {
+      status: req.body.status,
+    });
+    res.json({ success: true, message: "Order status updated" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Failed to update order status" });
+  }
+};
+export { placeOrder, verifyOrder, userOrders, listOrders, updateStatus };
