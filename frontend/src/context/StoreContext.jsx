@@ -9,8 +9,10 @@ const defaultContextValue = {
   addToCart: () => {},
   removeFromCart: () => {},
   getTotalCartAmount: () => 0,
+  applyPromoCode: () => {},
   url: "",
   token: "",
+  discount: 0,
   setToken: () => {}
 };
 
@@ -21,6 +23,22 @@ const StoreContextProvider = (props) => {
   const url = "http://localhost:4000";
   const [token, setToken] = useState("");
   const [food_list, setFoodList] = useState([]);
+  const [discount, setDiscount] = useState(0);
+
+  const promoCodes = {
+    SAVE10: 10,
+    SAVE20: 20
+  };
+
+  const applyPromoCode = (code) => {
+    if (promoCodes[code]) {
+      setDiscount(promoCodes[code]);
+      return { success: true, discount: promoCodes[code] };
+    } else {
+      setDiscount(0);
+      return { success: false, message: "Invalid promo code" };
+    }
+  };
 
   const addToCart = async (itemId) => {
     if (!cartItems[itemId]) {
@@ -56,6 +74,7 @@ const StoreContextProvider = (props) => {
         totalAmount += itemInfo.price * cartItems[item];
       }
     }
+
     return totalAmount;
   };
 
@@ -94,6 +113,8 @@ const StoreContextProvider = (props) => {
     addToCart,
     removeFromCart,
     getTotalCartAmount,
+    applyPromoCode,
+    discount,
     url,
     token,
     setToken

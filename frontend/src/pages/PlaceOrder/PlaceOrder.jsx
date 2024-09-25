@@ -4,7 +4,7 @@ import "./PlaceOrder.css";
 import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
 const PlaceOrder = () => {
-  const { getTotalCartAmount, token, food_list, cartItems, url } =
+  const { getTotalCartAmount, token, food_list, cartItems, url, discount } =
     useContext(StoreContext);
 
   const [data, setData] = useState({
@@ -16,7 +16,7 @@ const PlaceOrder = () => {
     state: "",
     zipcode: "",
     country: "",
-    phone: "",
+    phone: ""
   });
 
   const onChangHandler = (event) => {
@@ -35,20 +35,31 @@ const PlaceOrder = () => {
         orderItems.push(itemInfo);
       }
     });
+
+    const totalAmount = getTotalCartAmount();
+    const deliveryFee = totalAmount === 0 ? 0 : 70;
+    const discountAmount = (totalAmount * discount) / 100;
+    const finalAmount =
+      totalAmount === 0 ? 0 : totalAmount - discountAmount + deliveryFee;
+
     let orderData = {
       address: data,
       items: orderItems,
-      amount: getTotalCartAmount() + 2,
+      amount: finalAmount,
+      discount: discount
     };
+
+    console.log(orderData);
+
     let response = await axios.post(url + "/api/order/place", orderData, {
-      headers: { token },
+      headers: { token }
     });
 
     if (response.data.success) {
       const { session_url } = response.data;
       window.location.replace(session_url);
     } else {
-      alert("Error");
+      alert("Error placing the order");
     }
   };
 
@@ -59,7 +70,7 @@ const PlaceOrder = () => {
     } else if (getTotalCartAmount() === 0) {
       navigate("/cart");
     }
-  }, [token]);
+  }, [token, navigate, getTotalCartAmount]);
 
   return (
     <form onSubmit={placeOrder} className="place-order">
@@ -152,6 +163,17 @@ const PlaceOrder = () => {
               <p>Subtotal</p>
               <p>₹{getTotalCartAmount()}</p>
             </div>
+
+            {discount > 0 && (
+              <>
+                <hr />
+                <div className="cart-total-deails">
+                  <p>Discount ({discount}%)</p>
+                  <p>-₹{(getTotalCartAmount() * discount) / 100}</p>
+                </div>
+              </>
+            )}
+
             <hr />
             <div className="cart-total-deails">
               <p>Delivery Fee</p>
@@ -161,7 +183,12 @@ const PlaceOrder = () => {
             <div className="cart-total-deails">
               <b>Total</b>
               <b>
-                ₹{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 70}
+                ₹
+                {getTotalCartAmount() === 0
+                  ? 0
+                  : getTotalCartAmount() -
+                    (getTotalCartAmount() * discount) / 100 +
+                    70}
               </b>
             </div>
           </div>
