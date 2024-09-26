@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import ExploreMenu from "../../components/ExploreMenu/ExploreMenu";
 import Header from "../../components/Header/Header";
@@ -7,14 +8,14 @@ import AppDownload from "../../components/AppDownload/AppDownload";
 
 import "./Home.css";
 
-const Home = () => {
+const Home = ({ searchQuery, setSearchQuery }) => {
   const [category, setCategory] = useState("All");
 
   return (
     <div>
-      <Header />
+      <Header setSearchQuery={setSearchQuery} />
       <ExploreMenu category={category} setCategory={setCategory} />
-      <FoodDisplay category={category} />
+      <FoodDisplay category={category} searchQuery={searchQuery} />
       <AppDownload />
     </div>
   );

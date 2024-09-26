@@ -47,6 +47,39 @@
   cursor: pointer;
 }
 
+.navbar-search {
+  position: relative;
+}
+
+.navbar-search input {
+  padding: 10px 10px;
+  border: 1px solid tomato;
+  border-radius: 20px;
+  font-size: 14px;
+  width: 200px;
+  max-width: 200px;
+  transition: border-color 0.3s;
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 50px;
+  z-index: 10;
+}
+.navbar-search input.show {
+  display: block;
+}
+
+.navbar-search input:focus {
+  border-color: #333;
+  outline: none;
+}
+.navbar-search img {
+  width: 30px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
 .navbar-search-icon {
   position: relative;
 }
@@ -118,6 +151,10 @@
   .navbar-right button {
     padding: 8px 25px;
   }
+
+  .navbar-search input.show {
+    display: none;
+  }
 }
 
 @media (max-width: 900px) {
@@ -145,6 +182,42 @@
 
 @media (max-width: 750px) {
   .navbar-menu {
+    display: none;
+  }
+
+  .navbar-search input {
+    max-width: 150px;
+    padding: 7px 7px;
+    right: 30px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar .logo {
+    width: 110px;
+  }
+
+  .navbar-right {
+    gap: 15px;
+  }
+
+  .navbar-right button {
+    padding: 5px 15px;
+    font-size: 14px;
+  }
+
+  .navbar-search input {
+    max-width: 120px;
+    height: 28px;
+    padding: 5px 5px;
+    right: 30px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 500px) {
+  .navbar-search input.show {
     display: none;
   }
 }

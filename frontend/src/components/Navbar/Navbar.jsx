@@ -7,10 +7,11 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
 // eslint-disable-next-line react/prop-types
-const Navbar = ({ setShowLogin }) => {
+const Navbar = ({ setShowLogin, setSearchQuery }) => {
   const [menu, setMenu] = useState("home");
-
   const { getTotalCartAmount, token, setToken } = useContext(StoreContext);
+  const [searchInput, setSearchInput] = useState("");
+  const [isSearchVissible, setIsSearchVissible] = useState(false);
 
   const navigate = useNavigate();
 
@@ -18,6 +19,22 @@ const Navbar = ({ setShowLogin }) => {
     localStorage.removeItem("token");
     setToken("");
     navigate("/");
+  };
+
+  // Handle search input change
+  const handleSearchInput = (e) => {
+    const query = e.target.value;
+    setSearchInput(query);
+    setSearchQuery(query);
+  };
+
+  // Togle search input visibility
+  const toggleSearch = () => {
+    setIsSearchVissible(!isSearchVissible);
+    if (!isSearchVissible) {
+      setSearchInput("");
+      setSearchQuery("");
+    }
   };
 
   return (
@@ -58,7 +75,23 @@ const Navbar = ({ setShowLogin }) => {
       </ul>
 
       <div className="navbar-right">
-        <img src={assets.search_icon} alt="" />
+        <div className="navbar-search">
+          <img
+            src={assets.search_icon}
+            alt="Search Icon"
+            onClick={toggleSearch}
+            style={{ cursor: "pointer" }}
+          />
+          <input
+            type="text"
+            placeholder="Search dishes..."
+            value={searchInput}
+            onChange={handleSearchInput}
+            onBlur={() => setIsSearchVissible(false)}
+            className={isSearchVissible ? "show" : ""}
+          />
+        </div>
+
         <div className="navbar-search-icon">
           <Link to="/cart">
             {" "}
